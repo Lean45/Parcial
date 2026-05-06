@@ -1,6 +1,7 @@
 from sqlmodel import Session
 from app.database import engine
 from app.Entidades.Producto.repository import ProductoRepository
+from app.Entidades.Categoria.repository import CategoriaRepository
 
 
 class UnitOfWork:
@@ -10,6 +11,7 @@ class UnitOfWork:
     def __enter__(self):
         self.session = self.session_factory()
         self.producto_repository = ProductoRepository(self.session)
+        self.categoria_repository = CategoriaRepository(self.session)
         return self
 
 

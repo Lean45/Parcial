@@ -1,11 +1,38 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.Entidades.Categoria.schema import CategoriaCreate, CategoriaRead, CategoriaUpdate
+from . import schema
 from . import service
 from app.database import get_session
 from sqlmodel import Session
 
 router = APIRouter(prefix="/categorias", tags=["Categorías"])
 
+
+@router.get("/", response_model= list[schema.CategoriaRead])
+def Obtener_todas_categorias():
+    return service.Obtener_todas_categorias()
+
+@router.post("/", response_model= schema.CategoriaRead)
+def crear_categoria(datos: schema.CategoriaCreate):
+    return service.crear_categoria(datos)
+
+@router.get("/{id}", response_model = schema.CategoriaRead)
+def obtener_categoria_por_id(id: int):
+    return service.obtener_categoria_por_id(id)
+
+@router.put("/{id}", response_model = schema.CategoriaRead)
+def actualizar_categoria(id: int, data: schema.CategoriaUpdate):
+    return service.actualizar_categoria(id, data)
+
+@router.delete("/{id}", response_model= schema.CategoriaRead)
+def borrado_soft_categoria(id: int):
+    return service.borrado_soft_categoria(id)
+
+
+
+
+
+
+"""
 @router.post("/", response_model=CategoriaRead)
 def crear_categoria(datos: CategoriaCreate, session: Session = Depends(get_session)):
     try:
@@ -44,3 +71,5 @@ def obtener_subcategorias(id: int, session: Session = Depends(get_session)):
         return service.obtener_subcategorias(id, session)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+"""
