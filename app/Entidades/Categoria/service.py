@@ -4,6 +4,7 @@ from . import schema
 from datetime import datetime
 from app.Entidades.Categoria.repository import CategoriaRepository
 from app.Entidades.Core.uow import UnitOfWork
+from typing import List
 
 def crear_categoria(data: schema.CategoriaCreate) -> schema.CategoriaRead | None:
     with UnitOfWork() as uow:

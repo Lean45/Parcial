@@ -2,8 +2,42 @@ from . import model
 from . import schema
 from sqlmodel import Session, select
 from datetime import datetime
+from app.Entidades.Ingrediente.repository import IngredienteRepository
+from app.Entidades.Core.uow import UnitOfWork
+from typing import List
+
+def  crear_ingrediente(datos: schema.IngredienteCreate) -> schema.IngredienteRead | None:
+    with UnitOfWork() as uow:
+        ingrediente = uow.ingrediente_repository.create(datos)
+        result = schema.IngredienteRead.model_validate(ingrediente)
+        return result
+
+def obtener_ingrediente_por_id(id: int) -> schema.IngredienteRead | None:
+    with UnitOfWork() as uow:
+        ingrediente = uow.ingrediente_repository.get_by_id(id)
+        if not ingrediente:
+            raise ValueError("Ingredinte no encontrado")
+        return schema.IngredienteRead.model_validate(ingrediente)
+
+def obtener_todos_los_ingredientes() -> List[schema.IngredienteRead]:
+    with UnitOfWork() as uow:
+        ingrediente = uow.ingrediente_repository.get_all()
+        return [schema.IngredienteRead.model_validate(p) for p in ingrediente]
+
+def actualizar_ingrediente(id: int, datos: schema.IngredienteUpdate) -> schema.IngredienteRead | None:
+    with UnitOfWork() as uow:
+        ingrediente = uow.ingrediente_repository.update(id, datos)
+        return schema.IngredienteRead.model_validate(ingrediente)
+
+def borrado_soft_ingrediente(id: int):
+    with UnitOfWork() as uow:
+        ingrediente = uow.ingrediente_repository.delete(id)
+        return schema.IngredienteRead.model_validate(ingrediente)
 
 
+
+
+"""
 def Crear_ingrediente(datos: schema.IngredienteCreate, session: Session) -> model.Ingrediente:
     ingrediente = model.Ingrediente.model_validate(datos)
     session.add(ingrediente)
@@ -35,3 +69,4 @@ def Actualizar_ingrediente(id: int, datos: schema.IngredienteUpdate, session: Se
     session.refresh(ingrediente)
     return ingrediente
 
+"""

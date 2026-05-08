@@ -28,3 +28,6 @@ class CategoriaRead(CategoriaBase):
     updated_at: datetime
     deleted_at: Optional[datetime] = None
     disponible: bool = Field(default=True)
+    subcategorias: list["CategoriaRead"] = []
+
+CategoriaRead.model_rebuild()

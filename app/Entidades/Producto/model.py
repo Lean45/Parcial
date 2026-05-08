@@ -2,6 +2,14 @@ from sqlmodel import SQLModel, Field, Column, ARRAY, TEXT, Relationship
 from datetime import datetime
 from sqlalchemy import Numeric
 from app.Entidades.TablasIntermedias.ProductoCategoria.model import ProductoCategoria
+from app.Entidades.Categoria.model import Categoria
+from app.Entidades.TablasIntermedias.ProductoIngrediente.model import ProductoIngrediente
+from app.Entidades.Ingrediente.model import Ingrediente
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.Entidades.Categoria.model import Categoria
+    from app.Entidades.Ingrediente.model import Ingrediente
 
 class Producto(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -14,8 +22,13 @@ class Producto(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
     deleted_at: datetime | None = None
-"""
+
     categorias: list["Categoria"] = Relationship(
-        back_populates="productos",
-        link_model=ProductoCategoria
-    )"""
+        link_model=ProductoCategoria,
+        back_populates="productos"
+    )
+
+    ingredientes: list["Ingrediente"] = Relationship(
+        link_model=ProductoIngrediente,
+        back_populates="productos"
+    )

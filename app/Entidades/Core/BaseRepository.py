@@ -39,6 +39,28 @@ class BaseRepository(Generic[T]):
         self.session.add(entity)
         return entity
 
+    
+    def delete(self, id: int) -> T:
+        entity = self.get_by_id(id)
+        if not entity:
+            raise ValueError("Entity not found")
+    # Soft delete si el modelo tiene el flag/campos
+        if hasattr(entity, "disponible"):
+            entity.disponible = False
+            if hasattr(entity, "deleted_at"):
+                entity.deleted_at = datetime.now()  # o datetime.now(timezone.utc)
+            if hasattr(entity, "updated_at"):
+                entity.updated_at = datetime.now()  # o datetime.now(timezone.utc)
+            self.session.add(entity)
+            self.session.flush()
+            return entity
+        # Si no soporta soft delete => delete físico
+        self.session.delete(entity)
+        self.session.flush()
+        return entity
+
+
+    """
     def delete(self, id: int) -> T:
         entity = self.get_by_id(id)
         if not entity:
@@ -48,3 +70,4 @@ class BaseRepository(Generic[T]):
         entity.updated_at = datetime.now()
         self.session.add(entity)
         return entity
+    """

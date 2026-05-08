@@ -6,6 +6,46 @@ from sqlmodel import Session
 
 router = APIRouter(prefix="/ingredientes", tags=["Ingredientes"])
 
+
+
+@router.get("/", response_model= list[schema.IngredienteRead])
+def obtener_todos_los_ingredientes():
+    return service.obtener_todos_los_ingredientes()
+
+@router.post("/", response_model= schema.IngredienteRead)
+def crear_ingrediente(datos: schema.IngredienteCreate):
+    return service.crear_ingrediente(datos)
+
+@router.get("/{id}", response_model = schema.IngredienteRead)
+def obtener_ingrediente_por_id(id: int):
+    return service.obtener_ingrediente_por_id(id)
+
+@router.put("/{id}", response_model = schema.IngredienteRead)
+def actualizar_ingrediente(id: int, data: schema.IngredienteUpdate):
+    return service.actualizar_ingrediente(id, data)
+
+@router.delete("/{id}", response_model= schema.IngredienteRead)
+def borrado_soft_ingrediente(id: int):
+    return service.borrado_soft_ingrediente(id)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
 @router.post("/", response_model=schema.IngredienteRead)
 def crear_ingrediente(datos: schema.IngredienteCreate, session: Session = Depends(get_session)):
     try:
@@ -30,3 +70,4 @@ def actualizar_ingrediente(id: int, datos: schema.IngredienteUpdate, session: Se
         return service.Actualizar_ingrediente(id, datos, session)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+"""
